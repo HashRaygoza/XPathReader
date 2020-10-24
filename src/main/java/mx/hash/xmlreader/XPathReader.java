@@ -30,7 +30,6 @@ public class XPathReader {
 
     static public void main(String[] args) {
         try {
-            //String nombreArchivo = "FAC-CONTADO-44838_ENVIADO_Timbrado.xml";
             String nombreArchivo = "cfdi.xml";
             File archivo = new File(nombreArchivo);
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
