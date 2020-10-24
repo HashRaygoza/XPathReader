@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.hash.xmlreader;
 
 import java.io.File;
@@ -30,8 +25,11 @@ public class XPathReader {
 
     static public void main(String[] args) {
         try {
+            // Ruta del archivo XML
             String nombreArchivo = "cfdi.xml";
             File archivo = new File(nombreArchivo);
+            
+            // Generador de constructor de objetos XML
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
             // Esto es para agilizar la lectura de archivos grandes
@@ -42,45 +40,64 @@ public class XPathReader {
             documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
             documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
+            // constructor de objetos XML
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            
+            // Objeto Documento XML
             Document documento = documentBuilder.parse(archivo);
 
+            // Esto ayuda al procesamiento
             documento.getDocumentElement().normalize();
 
+            // XPath nos permite seleccionar objetos via su ubicacion en la estructura del XML
             XPath xPath = XPathFactory.newInstance().newXPath();
-            // Se quita el prefijo cfdi
-            String expression = "/Comprobante/Impuestos/Traslados/Traslado";
-            NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(documento, XPathConstants.NODESET);
             
-            System.out.println(nodeList.getLength());
+            // La ruta del elemento que deseamos, para este omitir el prefijo cfdi:
+            String expresionTranslados = "/Comprobante/Impuestos/Traslados/Traslado";
             
-            Element elemento = (Element) nodeList.item(0);
+            // Obtenemos todos los nodos que empatan con la ruta que indicamos
+            NodeList nodeListTranslados = (NodeList) xPath.compile(expresionTranslados).evaluate(documento, XPathConstants.NODESET);
             
-            System.out.println("Importe\t\t: " + elemento.getAttribute("Importe"));
-            System.out.println("TasaOCuota\t\t: " + elemento.getAttribute("TasaOCuota"));
-            System.out.println("TipoFactor\t\t: " + elemento.getAttribute("TipoFactor"));
-            System.out.println("Impuesto\t\t: " + elemento.getAttribute("Impuesto"));
             
-            String conceptos = "Comprobante/Conceptos/Concepto";
-            NodeList nodeListConceptos = (NodeList) xPath.compile(conceptos).evaluate(documento, XPathConstants.NODESET);
+            System.out.println("Cantidad de elementos que empatan con la ruta" + nodeListTranslados.getLength());
             
-            System.out.println("");
+            // Obtenemos el primer elemento de esa lista
+            Element translado = (Element) nodeListTranslados.item(0);
+            
+            // Presentamos los atributos de ese elemento
+            System.out.println("Importe\t\t: " + translado.getAttribute("Importe"));
+            System.out.println("TasaOCuota\t\t: " + translado.getAttribute("TasaOCuota"));
+            System.out.println("TipoFactor\t\t: " + translado.getAttribute("TipoFactor"));
+            System.out.println("Impuesto\t\t: " + translado.getAttribute("Impuesto"));
+
+            // Ruta de los conceptos d ela factura
+            String expresionConceptos = "/Comprobante/Conceptos/Concepto";
+            
+            // Lista de nodos de conceptos
+            NodeList nodeListConceptos = (NodeList) xPath.compile(expresionConceptos).evaluate(documento, XPathConstants.NODESET);
+            
+            System.out.println("Cantidad de conceptos de la factura");
             System.out.println(nodeListConceptos.getLength());
             System.out.println("");
             
+            // Avanzamos por la lista para presentar los conceptos
             for (int temp = 0; temp < nodeListConceptos.getLength(); temp++) {
 
-                Node nNode = nodeListConceptos.item(temp);
+                // Obtenemos un nodo
+                Node nodoConcepto = nodeListConceptos.item(temp);
 
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                // Verificamos que el nodo sea un elemento, para prevenir errores
+                if (nodoConcepto.getNodeType() == Node.ELEMENT_NODE) {
 
-                    Element eElement = (Element) nNode;
+                    // Convertimos de Node a elemento
+                    Element elementoConcepto = (Element) nodoConcepto;
 
-                    System.out.println("ClaveProdServ\t\t: " + eElement.getAttribute("ClaveProdServ"));
-                    System.out.println("ClaveUnidad\t\t: " + eElement.getAttribute("ClaveUnidad"));
-                    System.out.println("Descripciont\t\t: " + eElement.getAttribute("Descripcion"));
-                    System.out.println("ValorUnitario\t\t: " + eElement.getAttribute("ValorUnitario"));
-                    System.out.println("NoIdentificacion\t: " + eElement.getAttribute("NoIdentificacion"));
+                    // Presentamos los datos de cada elemento de la factura
+                    System.out.println("ClaveProdServ\t\t: " + elementoConcepto.getAttribute("ClaveProdServ"));
+                    System.out.println("ClaveUnidad\t\t: " + elementoConcepto.getAttribute("ClaveUnidad"));
+                    System.out.println("Descripciont\t\t: " + elementoConcepto.getAttribute("Descripcion"));
+                    System.out.println("ValorUnitario\t\t: " + elementoConcepto.getAttribute("ValorUnitario"));
+                    System.out.println("NoIdentificacion\t: " + elementoConcepto.getAttribute("NoIdentificacion"));
                     System.out.println("\n");
 
                 }
