@@ -25,10 +25,6 @@ public class XPathReader {
 
     static public void main(String[] args) {
         try {
-            // Ruta del archivo XML
-            String nombreArchivo = "cfdi.xml";
-            File archivo = new File(nombreArchivo);
-            
             // Generador de constructor de objetos XML
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
@@ -42,6 +38,10 @@ public class XPathReader {
 
             // constructor de objetos XML
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            
+            // Ruta del archivo XML
+            String nombreArchivo = "cfdi.xml";
+            File archivo = new File(nombreArchivo);
             
             // Objeto Documento XML
             Document documento = documentBuilder.parse(archivo);
@@ -59,7 +59,7 @@ public class XPathReader {
             NodeList nodeListTranslados = (NodeList) xPath.compile(expresionTranslados).evaluate(documento, XPathConstants.NODESET);
             
             
-            System.out.println("Cantidad de elementos que empatan con la ruta" + nodeListTranslados.getLength());
+            System.out.println("Cantidad de elementos que empatan con la ruta \n" + expresionTranslados + "\n" + nodeListTranslados.getLength() + "\n");
             
             // Obtenemos el primer elemento de esa lista
             Element translado = (Element) nodeListTranslados.item(0);
@@ -69,6 +69,7 @@ public class XPathReader {
             System.out.println("TasaOCuota\t\t: " + translado.getAttribute("TasaOCuota"));
             System.out.println("TipoFactor\t\t: " + translado.getAttribute("TipoFactor"));
             System.out.println("Impuesto\t\t: " + translado.getAttribute("Impuesto"));
+            System.out.println("\n");
 
             // Ruta de los conceptos d ela factura
             String expresionConceptos = "/Comprobante/Conceptos/Concepto";
@@ -76,7 +77,7 @@ public class XPathReader {
             // Lista de nodos de conceptos
             NodeList nodeListConceptos = (NodeList) xPath.compile(expresionConceptos).evaluate(documento, XPathConstants.NODESET);
             
-            System.out.println("Cantidad de conceptos de la factura");
+            System.out.println("Cantidad de conceptos que empatan con la ruta\n" + expresionConceptos);
             System.out.println(nodeListConceptos.getLength());
             System.out.println("");
             
